@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:animateLayoutChanges="true">
+ 
+    <TextView
+        android:duplicateParentState="true"
+        android:id="@+id/text1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:minHeight="?android:attr/listPreferredItemHeight"
+        android:textSize="14sp"
+        android:textColor="@drawable/drawer_item_text_color_selector"
+        android:gravity="center_vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"/>
+
+</RelativeLayout>
