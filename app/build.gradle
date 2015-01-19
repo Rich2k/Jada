@@ -26,5 +26,4 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:21.0.3'
     compile 'org.jsoup:jsoup:1.8.1'
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
-    compile project(path: ':backend', configuration: 'android-endpoints')
 }
