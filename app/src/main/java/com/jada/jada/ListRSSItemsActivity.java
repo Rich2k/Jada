@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -25,7 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ListRSSItemsActivity extends ActionBarActivity{
+    String LOG_LISTRSSITEMSACTIVITY = "ListRSSItemsActivity";
 
+    private static String TAG_ID = "id";
     private static String TAG_TITLE = "title";
     private static String TAG_LINK = "link";
     private static String TAG_DESRIPTION = "description";
@@ -49,7 +52,7 @@ public class ListRSSItemsActivity extends ActionBarActivity{
         Intent i = getIntent();
 
         // SQLite Row id
-        Integer site_id = Integer.parseInt(i.getStringExtra("id"));
+        Integer site_id = Integer.parseInt(i.getStringExtra(TAG_ID));
 
         // Getting Single website from SQLite
         RSSDatabaseHandler rssDB = new RSSDatabaseHandler(getApplicationContext());
@@ -57,7 +60,7 @@ public class ListRSSItemsActivity extends ActionBarActivity{
 
         WebSite site = rssDB.getSite(site_id);
         String rss_link = site.getRSSLink();
-
+        Log.d(LOG_LISTRSSITEMSACTIVITY, "RSS Link: " + rss_link);
         /**
          * Calling a backgroung thread will loads recent articles of a website
          * @param rss url of website
@@ -96,7 +99,7 @@ public class ListRSSItemsActivity extends ActionBarActivity{
             super.onPreExecute();
             pDialog = new ProgressDialog(
                     ListRSSItemsActivity.this);
-            pDialog.setMessage("Loading recent articles...");
+            pDialog.setMessage("Loading recent articles");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(false);
             pDialog.show();
@@ -109,7 +112,7 @@ public class ListRSSItemsActivity extends ActionBarActivity{
         protected String doInBackground(String... args) {
             // rss link url
             String rss_url = args[0];
-
+            Log.d(LOG_LISTRSSITEMSACTIVITY, "RSS URL: " + rss_url);
             // list of rss items
             rssItems = rssParser.getRSSFeedItems(rss_url);
 

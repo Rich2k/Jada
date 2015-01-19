@@ -23,7 +23,7 @@ public class RSSDatabaseHandler extends SQLiteAssetHelper {
 	private static final String TABLE_RSS = "websites";
 
 	// Contacts Table Columns names
-	private static final String KEY_ID = "_id";
+	private static final String KEY_ID = "id";
 	private static final String KEY_TITLE = "title";
 	private static final String KEY_LINK = "link";
 	private static final String KEY_RSS_LINK = "rss_link";
@@ -208,7 +208,7 @@ public class RSSDatabaseHandler extends SQLiteAssetHelper {
 	public boolean isSiteExists(SQLiteDatabase db, String rss_link) {
 
 		Cursor cursor = db.rawQuery("SELECT 1 FROM " + TABLE_RSS
-				+ " WHERE rss_link = '" + rss_link + "'", new String[] {});
+				+ " WHERE " + KEY_RSS_LINK + " = '" + rss_link + "'", new String[] {});
 		boolean exists = (cursor.getCount() > 0);
 		return exists;
 	}

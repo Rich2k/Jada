@@ -30,7 +30,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class RSSParser {
-
+    String LOG_RSSPARSER = "RSSParser";
     // RSS XML document CHANNEL tag
     private static String TAG_CHANNEL = "channel";
     private static String TAG_TITLE = "title";
@@ -70,6 +70,7 @@ public class RSSParser {
                 // parse the xml
                 try {
                     Document doc = this.getDomElement(rss_feed_xml);
+                    Log.d(LOG_RSSPARSER, "RSS Feed XML in getRSSFeed: " + rss_feed_xml);
                     NodeList nodeList = doc.getElementsByTagName(TAG_CHANNEL);
                     Element e = (Element) nodeList.item(0);
 
@@ -106,7 +107,7 @@ public class RSSParser {
 
         // get RSS XML from rss url
         rss_feed_xml = this.getXmlFromUrl(rss_url);
-
+        Log.d(LOG_RSSPARSER, "RSS Feed XML in getRSSFeedItems: " + rss_feed_xml);
         // check if RSS XML fetched or not
         if (rss_feed_xml != null) {
             // successfully fetched rss xml
@@ -207,6 +208,7 @@ public class RSSParser {
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
+        Log.d(LOG_RSSPARSER, "Return XML in getXMLFromUrl: " + xml);
         // return XML
         return xml;
     }
