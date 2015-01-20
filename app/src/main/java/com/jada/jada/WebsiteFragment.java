@@ -6,10 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -80,43 +77,6 @@ public class WebsiteFragment extends Fragment {
             getActivity().finish();
             startActivity(intent);
         }
-    }
-
-    /**
-     * Building a context menu for listview
-     * Long press on List row to see context menu
-     */
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-                                    ContextMenu.ContextMenuInfo menuInfo) {
-        if (v.getId() == R.id.site_list) {
-            menu.setHeaderTitle("Delete");
-            menu.add(Menu.NONE, 0, 0, "Delete Feed");
-        }
-    }
-
-    /**
-     * Responding to context menu selected option
-     */
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        int menuItemIndex = item.getItemId();
-        // check for selected option
-        if (menuItemIndex == 0) {
-            // user selected delete
-            // delete the feed
-            RSSDatabaseHandler rssDb = new RSSDatabaseHandler(getActivity().getApplicationContext());
-            WebSite site = new WebSite();
-            site.setId(Integer.parseInt(sqliteIds[info.position]));
-            rssDb.deleteSite(site);
-            //reloading same activity again
-            Intent intent = getActivity().getIntent();
-            getActivity().finish();
-            startActivity(intent);
-        }
-
-        return true;
     }
 
     @Override
@@ -256,7 +216,6 @@ public class WebsiteFragment extends Fragment {
                                 new int[]{R.id.sqlite_id, R.id.title, R.id.link});
                         // updating listview
                         websiteFragment.lv.setAdapter(adapter);
-                        websiteFragment.registerForContextMenu(websiteFragment.lv);
                         //websiteFragment.pDialog.dismiss();
                     }
                 });
