@@ -5,6 +5,5 @@
         android:layout_height="match_parent"
         android:divider="#bababa"
         android:dividerHeight="1dp"
-        android:listSelector="@drawable/drawer_item_selector"
         android:background="#ffffff"
         android:cacheColorHint="#00000000"/>

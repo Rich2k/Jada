@@ -11,15 +11,17 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jada.jada.adapter.RSSItemsListAdapter;
 import com.jada.jada.database.RSSDatabaseHandler;
 import com.jada.jada.helper.RSSParser;
 import com.jada.jada.model.RSSFeed;
 import com.jada.jada.model.RSSItem;
 import com.jada.jada.model.WebSite;
+
+import org.jsoup.Jsoup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,13 +61,14 @@ public class ListRSSItemsActivity extends ActionBarActivity{
 
 
         WebSite site = rssDB.getSite(site_id);
+        getSupportActionBar().setTitle(site.getTitle());
         String rss_link = site.getRSSLink();
         Log.d(LOG_LISTRSSITEMSACTIVITY, "RSS Link: " + rss_link);
         /**
          * Calling a backgroung thread will loads recent articles of a website
          * @param rss url of website
          * */
-        new loadRSSFeedItems().execute(rss_link);
+        new LoadRSSFeedItems(this).execute(rss_link);
 
         // selecting single ListView item
         lv = (ListView)findViewById(R.id.rss_list);
@@ -79,8 +82,10 @@ public class ListRSSItemsActivity extends ActionBarActivity{
 
                 // getting page url
                 String page_url = ((TextView) view.findViewById(R.id.page_url)).getText().toString();
-                Toast.makeText(getApplicationContext(), page_url, Toast.LENGTH_SHORT).show();
+                String page_title = ((TextView) view.findViewById(R.id.title)).getText().toString();
+                Toast.makeText(getApplicationContext(), page_title, Toast.LENGTH_SHORT).show();
                 in.putExtra("page_url", page_url);
+                in.putExtra("page_title", page_title);
                 startActivity(in);
             }
         });
@@ -89,20 +94,25 @@ public class ListRSSItemsActivity extends ActionBarActivity{
     /**
      * Background Async Task to get RSS Feed Items data from URL
      */
-    class loadRSSFeedItems extends AsyncTask<String, String, String> {
+    static class LoadRSSFeedItems extends AsyncTask<String, String, String> {
+        ListRSSItemsActivity listRSSItemsActivity = null;
 
+        LoadRSSFeedItems(ListRSSItemsActivity listRSSItemsActivity){
+            super();
+            this.listRSSItemsActivity = listRSSItemsActivity;
+        }
         /**
          * Before starting background thread Show Progress Dialog
          */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(
-                    ListRSSItemsActivity.this);
-            pDialog.setMessage("Loading recent articles");
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(false);
-            pDialog.show();
+            listRSSItemsActivity.pDialog = new ProgressDialog(
+                    listRSSItemsActivity);
+            listRSSItemsActivity.pDialog.setMessage("Loading recent articles");
+            listRSSItemsActivity.pDialog.setIndeterminate(false);
+            listRSSItemsActivity.pDialog.setCancelable(false);
+            listRSSItemsActivity.pDialog.show();
         }
 
         /**
@@ -112,12 +122,12 @@ public class ListRSSItemsActivity extends ActionBarActivity{
         protected String doInBackground(String... args) {
             // rss link url
             String rss_url = args[0];
-            Log.d(LOG_LISTRSSITEMSACTIVITY, "RSS URL: " + rss_url);
+            Log.d(listRSSItemsActivity.LOG_LISTRSSITEMSACTIVITY, "RSS URL: " + rss_url);
             // list of rss items
-            rssItems = rssParser.getRSSFeedItems(rss_url);
+            listRSSItemsActivity.rssItems = listRSSItemsActivity.rssParser.getRSSFeedItems(rss_url);
 
             // looping through each item
-            for (RSSItem item : rssItems) {
+            for (RSSItem item : listRSSItemsActivity.rssItems) {
                 // creating new HashMap
                 HashMap<String, String> map = new HashMap<String, String>();
 
@@ -125,7 +135,7 @@ public class ListRSSItemsActivity extends ActionBarActivity{
                 map.put(TAG_TITLE, item.getTitle());
                 map.put(TAG_LINK, item.getLink());
                 map.put(TAG_PUB_DATE, item.getPubdate());
-                String description = item.getDescription();
+                String description = Jsoup.parse(item.getDescription()).text();
                 // taking only 200 chars from description
                 if (description.length() > 100) {
                     description = description.substring(0, 97) + "..";
@@ -133,23 +143,23 @@ public class ListRSSItemsActivity extends ActionBarActivity{
                 map.put(TAG_DESRIPTION, description);
 
                 // adding HashList to ArrayList
-                rssItemList.add(map);
+                listRSSItemsActivity.rssItemList.add(map);
             }
 
             // updating UI from Background Thread
-            runOnUiThread(new Runnable() {
+            listRSSItemsActivity.runOnUiThread(new Runnable() {
                 public void run() {
                     /**
                      * Updating parsed items into listview
                      * */
-                    ListAdapter adapter = new SimpleAdapter(
-                            ListRSSItemsActivity.this,
-                            rssItemList, R.layout.rss_item_list_row,
+                    ListAdapter adapter = new RSSItemsListAdapter(
+                            listRSSItemsActivity.getApplicationContext(),
+                            listRSSItemsActivity.rssItemList, R.layout.rss_item_list_row,
                             new String[]{TAG_LINK, TAG_TITLE, TAG_PUB_DATE, TAG_DESRIPTION},
-                            new int[]{R.id.page_url, R.id.title, R.id.pub_date, R.id.link});
+                            new int[]{R.id.page_url, R.id.title, R.id.pub_date, R.id.desc});
 
                     // updating listview
-                    lv.setAdapter(adapter);
+                    listRSSItemsActivity.lv.setAdapter(adapter);
                 }
             });
             return null;
@@ -160,8 +170,10 @@ public class ListRSSItemsActivity extends ActionBarActivity{
          * *
          */
         protected void onPostExecute(String args) {
-            // dismiss the dialog after getting all products
-            pDialog.dismiss();
+            if (listRSSItemsActivity != null) {
+                // dismiss the dialog after getting all products
+                listRSSItemsActivity.pDialog.dismiss();
+            }
         }
     }
 }

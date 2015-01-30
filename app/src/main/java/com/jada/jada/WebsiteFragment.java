@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,7 @@ public class WebsiteFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     public static String TAG_ID = "id";
     public static String TAG_TITLE = "title";
-    public static String TAG_LINK = "link";
+    public static String TAG_DESC = "desc";
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -183,7 +184,7 @@ public class WebsiteFragment extends Fragment {
                         // adding each child node to HashMap key => value
                         map.put(TAG_ID, s.getId().toString());
                         map.put(TAG_TITLE, s.getTitle());
-                        map.put(TAG_LINK, s.getLink());
+                        map.put(TAG_DESC, Html.fromHtml(s.getDescription()).toString());
 
                         // adding HashList to ArrayList
                         websiteFragment.rssFeedList.add(map);
@@ -212,8 +213,8 @@ public class WebsiteFragment extends Fragment {
                         ListAdapter adapter = new SimpleAdapter(
                                 websiteFragment.getActivity(),
                                 websiteFragment.rssFeedList, R.layout.site_list_row,
-                                new String[]{TAG_ID, TAG_TITLE, TAG_LINK},
-                                new int[]{R.id.sqlite_id, R.id.title, R.id.link});
+                                new String[]{TAG_ID, TAG_TITLE, TAG_DESC},
+                                new int[]{R.id.sqlite_id, R.id.title, R.id.desc});
                         // updating listview
                         websiteFragment.lv.setAdapter(adapter);
                         //websiteFragment.pDialog.dismiss();
