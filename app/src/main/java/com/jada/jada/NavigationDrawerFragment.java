@@ -22,9 +22,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.jada.jada.adapter.NavDrawerListAdapter;
+import com.jada.jada.database.RSSDatabaseHandler;
 import com.jada.jada.model.NavDrawerItem;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -101,8 +103,9 @@ public class NavigationDrawerFragment extends Fragment {
                 selectItem(position);
             }
         });
-        ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<NavDrawerItem>();
-        String []categories = getResources().getStringArray(R.array.categories);
+        ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<>();
+        RSSDatabaseHandler rssDb = new RSSDatabaseHandler(getActivity().getApplicationContext());
+        List<String> categories = rssDb.getAllCategories();
         for(String category:categories){
             navDrawerItems.add(new NavDrawerItem(category.substring(0,1).toUpperCase() + category.substring(1)));
         }
@@ -245,10 +248,7 @@ public class NavigationDrawerFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return mDrawerToggle.onOptionsItemSelected(item);
     }
 
     /**

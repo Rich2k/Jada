@@ -8,6 +8,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.jada.jada.database.RSSDatabaseHandler;
+
+import java.util.List;
+
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -46,8 +50,8 @@ public class MainActivity extends ActionBarActivity
     }
 
     public void onSectionAttached(int number) {
-        String[] categories = getResources().getStringArray(R.array.categories);
-        mTitle = categories[number].substring(0, 1).toUpperCase() + categories[number].substring(1);
+        List<String> categories = new RSSDatabaseHandler(this).getAllCategories();
+        mTitle = categories.get(number).substring(0, 1).toUpperCase() + categories.get(number).substring(1);
     }
 
     public void restoreActionBar() {

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Jada</string>
+    <string name="app_name" translatable="false">Jada</string>
     <string name="title_students">Students</string>
     <string name="enter_url">Enter Website URL</string>
     <string name="enter_url_abc">Enter URL (http://abc.com)</string>
-    <string name="https">http://</string>
+    <string name="https" translatable="false">http://</string>
     <string name="submit">Submit</string>
     <string name="title_add_website">Add Website</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>

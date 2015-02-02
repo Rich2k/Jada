@@ -1,18 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="categories">
-        <item>android</item>
-        <item>blogs</item>
-        <item>others</item>
-        <item>technical</item>
-        <item>culture</item>
-        <item>community</item>
-        <item>news</item>
-        <item>humor</item>
-        <item>design</item>
-        <item>men</item>
-        <item>women</item>
-        <item>photo</item>
-        <item>audio</item>
-    </string-array>
+
 </resources>

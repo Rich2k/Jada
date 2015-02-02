@@ -81,10 +81,10 @@ public class RSSDatabaseHandler extends SQLiteAssetHelper {
 	}
 
     /**
-     * Reading all rows from database
+     * Reading all rows from database with category parameter
      * */
     public List<WebSite> getAllCategorySites(String category) {
-        List<WebSite> siteList = new ArrayList<WebSite>();
+        List<WebSite> siteList = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_RSS + " WHERE " + KEY_CATEGORY + " = '" + category
                 + "' ORDER BY " + KEY_ID + " DESC";
@@ -113,14 +113,34 @@ public class RSSDatabaseHandler extends SQLiteAssetHelper {
         return siteList;
     }
 
+    /**
+     * Reading all categories
+     */
+    public List<String> getAllCategories() {
+        List<String> categories = new ArrayList<>();
+        String selectQuery = "SELECT DISTINCT " + KEY_CATEGORY + " FROM " + TABLE_RSS + " ORDER BY " + KEY_CATEGORY;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                categories.add(cursor.getString(0));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        return categories;
+    }
+
 	/**
 	 * Reading all rows from database
 	 * */
 	public List<WebSite> getAllSites() {
-		List<WebSite> siteList = new ArrayList<WebSite>();
-		// Select All Query
-		String selectQuery = "SELECT  * FROM " + TABLE_RSS
-				+ " ORDER BY " + KEY_ID + " DESC";
+        List<WebSite> siteList = new ArrayList<>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_RSS
+                + " ORDER BY " + KEY_ID + " DESC";
 
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
@@ -209,8 +229,7 @@ public class RSSDatabaseHandler extends SQLiteAssetHelper {
 
 		Cursor cursor = db.rawQuery("SELECT 1 FROM " + TABLE_RSS
 				+ " WHERE " + KEY_RSS_LINK + " = '" + rss_link + "'", new String[] {});
-		boolean exists = (cursor.getCount() > 0);
-		return exists;
-	}
+        return cursor.getCount() > 0;
+    }
 
 }

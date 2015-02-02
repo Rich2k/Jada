@@ -1,7 +1,6 @@
 package com.jada.jada;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,8 +41,6 @@ public class WebsiteFragment extends Fragment {
     String[] sqliteIds;
     // List view
     ListView lv = null;
-    // Progress Dialog
-    private ProgressDialog pDialog;
 
     private LoadStoreSites loadStoreSites = null;
 
@@ -99,8 +96,8 @@ public class WebsiteFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.site_list, container, false);
 
-        String[] categories = getActivity().getResources().getStringArray(R.array.categories);
-        FRAGMENT_CATEGORY = categories[getArguments().getInt(ARG_SECTION_NUMBER)];
+        List<String> categories = new RSSDatabaseHandler(getActivity().getApplicationContext()).getAllCategories();
+        FRAGMENT_CATEGORY = categories.get(getArguments().getInt(ARG_SECTION_NUMBER));
         // selecting single ListView item
         lv = (ListView) rootView.findViewById(R.id.site_list);
         // Launching new screen on Selecting Single ListItem
@@ -150,12 +147,7 @@ public class WebsiteFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-            super.onPreExecute();/*
-            websiteFragment.pDialog = new ProgressDialog(websiteFragment.getActivity());
-            websiteFragment.pDialog.setMessage("Fetching RSS Information");
-            websiteFragment.pDialog.setIndeterminate(false);
-            websiteFragment.pDialog.setCancelable(false);
-            websiteFragment.pDialog.show();*/
+            super.onPreExecute();
         }
 
         /**
@@ -217,7 +209,6 @@ public class WebsiteFragment extends Fragment {
                                 new int[]{R.id.sqlite_id, R.id.title, R.id.desc});
                         // updating listview
                         websiteFragment.lv.setAdapter(adapter);
-                        //websiteFragment.pDialog.dismiss();
                     }
                 });
             }
